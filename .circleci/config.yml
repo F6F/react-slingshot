@@ -41,7 +41,7 @@ jobs:
       - run: 
           name: bring up cloudformation
           command: |
-            aws cloudformation create-stack --stack-name infraStack --template-body infra/template.yml --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region=us-east-1
+            aws cloudformation create-stack --stack-name infraStack --template-body file://infra/template.yml --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region=us-east-1
 
 
 workflows:
