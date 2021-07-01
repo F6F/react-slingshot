@@ -1,4 +1,13 @@
 Resources:
+  TobyVPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: !Ref VpcCIDR
+      EnableDnsHostnames: 'true'
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+
   Ec2Instance:
     Type: 'AWS::EC2::Instance'
     Properties:
@@ -11,7 +20,7 @@ Resources:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
       GroupDescription: Enable SSH access via port 22
-      VpcId: vpc-0023088ec188df96c
+      VpcId: !Ref TobyVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: '22'
