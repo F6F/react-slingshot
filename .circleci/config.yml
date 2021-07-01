@@ -30,6 +30,13 @@ jobs:
       - run: npm i
       - run: npm audit
 
+  create_infrastructure:
+    docker:
+      -image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: aws cloudformation create-stack --stack-name infraStack --template-body infra/template.yml --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region=us-east-1
+
 
 workflows:
   # Name the workflow "welcome"
@@ -41,6 +48,6 @@ workflows:
       - test:
           requires:
             - build
-      - analyze:
+      - create_infrastructure:
           requires:
             - test
