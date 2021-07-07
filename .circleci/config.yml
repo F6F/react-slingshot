@@ -51,7 +51,7 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text >> inventory
       - save_cache:
-          key: inventory-{{ .BuildNum }}
+          key: inventory-{{ .CIRCLE_PREVIOUS_BUILD_NUM }}
           paths:
             - infra/ansible/inventory
 
