@@ -50,8 +50,8 @@ jobs:
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text >> inventory
-      - save_cache:
-          key: inventory-{{ .BuildNum }}
+      - persist_to_workspace:
+          root: .
           paths:
             - infra/ansible/inventory
 
@@ -60,9 +60,8 @@ jobs:
       - image: python:3.7-alpine3.11 
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - inventory-{{ .CIRCLE_PREVIOUS_BUILD_NUM }}
+      - attach_workspace:
+          at: .
       - add_ssh_keys:
           fingerprints: ["c0:88:5a:7b:6c:1c:08:67:06:fa:46:62:f4:8c:e2:96"]
       - run:
