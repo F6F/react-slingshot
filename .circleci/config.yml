@@ -43,6 +43,44 @@ jobs:
           command: |
             aws cloudformation create-stack --stack-name infraStack --template-body file://infra/template.yml --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region=us-east-1
 
+  setup_infa:
+    docker:
+      - image: python:3.7-alpine3.11 
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["c0:88:5a:7b:6c:1c:08:67:06:fa:46:62:f4:8c:e2:96"]
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+      - run: 
+          name: populate inventory file
+          command: | 
+            echo "[all]" > infra/ansible/inventory
+            aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text >> infra/ansible/inventory
+      - run:
+          name: run Ansible
+          command: |
+            ansible-playbook infra/ansible/main-remote.yml -i infra/ansible/inventory
+
+    smoke_test:
+      docker:
+        - image: alpine:latest
+      steps:
+        - run: apk add --update curl
+        - run:
+            name: smoke test.
+            command: |
+              URL="https://blog.udacity.com/"
+              if curl -s --head ${URL} # test if blog.udacity. com exists
+              then
+               return 0
+              else
+               return 1
+              fi
 
 workflows:
   # Name the workflow "welcome"
@@ -57,3 +95,6 @@ workflows:
       - create_infrastructure:
           requires:
             - test
+      - setup_infra:
+          requires:
+            - create_infrastructure
