@@ -43,7 +43,7 @@ jobs:
           command: |
             aws cloudformation create-stack --stack-name infraStack --template-body file://infra/template.yml --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region=us-east-1
 
-  setup_infa:
+  setup_infra:
     docker:
       - image: python:3.7-alpine3.11 
     steps:
