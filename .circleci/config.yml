@@ -49,7 +49,7 @@ jobs:
             echo "[all]" > infra/ansible/inventory
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text >> infra/ansible/inventory
+              --output text >> inventory
       - save_cache:
           key: inventoryFile
           paths:
@@ -73,7 +73,7 @@ jobs:
       - run:
           name: run Ansible
           command: |
-            ansible-playbook infra/ansible/main-remote.yml -i infra/ansible/inventory
+            ansible-playbook infra/ansible/main-remote.yml -i inventory
 
   smoke_test:
     docker:
