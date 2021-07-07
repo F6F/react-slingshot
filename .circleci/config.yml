@@ -51,7 +51,7 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text >> inventory
       - save_cache:
-          key: inventory-{{ .CIRCLE_PREVIOUS_BUILD_NUM }}
+          key: inventory-{{ .BuildNum }}
           paths:
             - infra/ansible/inventory
 
@@ -62,7 +62,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - inventory-{{ .BuildNum }}
+            - inventory-{{ .CIRCLE_PREVIOUS_BUILD_NUM }}
       - add_ssh_keys:
           fingerprints: ["c0:88:5a:7b:6c:1c:08:67:06:fa:46:62:f4:8c:e2:96"]
       - run:
