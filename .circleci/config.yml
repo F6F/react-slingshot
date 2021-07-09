@@ -42,7 +42,7 @@ jobs:
           name: install aws-cli
           command: |
             export DEBIAN_FRONTEND=noninteractive
-            apt-get update && apt-get install -yq curl unzip awscli
+            apt-get update && apt-get install -yq curl unzip awscli ansible
 
       - run: 
           name: bring up cloudformation
@@ -56,25 +56,9 @@ jobs:
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text >> inventory
-      - persist_to_workspace:
-          root: .
-          paths:
-            - infra/ansible/inventory
-
-  setup_infra:
-    docker:
-      - image: python:3.7-alpine3.11 
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
       - add_ssh_keys:
           fingerprints: ["c0:88:5a:7b:6c:1c:08:67:06:fa:46:62:f4:8c:e2:96"]
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update ansible
-
+      
       - run:
           name: run Ansible
           command: |
@@ -107,6 +91,4 @@ workflows:
       #    requires:
       #      - build
       - create_infrastructure
-      - setup_infra:
-          requires:
-            - create_infrastructure
+
