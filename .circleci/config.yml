@@ -55,7 +55,7 @@ jobs:
             echo "[all]" > infra/ansible/inventory
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text >> inventory
+              --output text >> infra/ansible/inventory
       - add_ssh_keys:
           fingerprints: ["c0:88:5a:7b:6c:1c:08:67:06:fa:46:62:f4:8c:e2:96"]
       
