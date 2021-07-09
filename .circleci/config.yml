@@ -53,6 +53,7 @@ jobs:
           name: populate inventory file
           command: | 
             aws configure set region us-west-1
+            sleep 60
             echo "[all]" > infra/ansible/inventory
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
