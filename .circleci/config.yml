@@ -71,6 +71,23 @@ jobs:
           command: |
             ansible-playbook infra/ansible/main-remote.yml -i infra/ansible/inventory
 
+  destroy_infrastructure:
+    docker:
+      - image: ubuntu:latest
+    steps:
+      - checkout
+      - run:
+          name: install aws-cli
+          command: |
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update && apt-get install -yq curl unzip awscli ansible
+
+      - run: 
+          name: bring up cloudformation
+          command: |
+            aws cloudformation delete-stack --stack-name infraStack
+
+
   smoke_test:
     docker:
       - image: alpine:latest
@@ -98,4 +115,7 @@ workflows:
       #    requires:
       #      - build
       - create_infrastructure
+      - destroy_infrastructure:
+          requires:
+            create_infrastructure
 
