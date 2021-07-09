@@ -117,5 +117,5 @@ workflows:
       - create_infrastructure
       - destroy_infrastructure:
           requires:
-            create_infrastructure
+            - create_infrastructure
 
